@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolver Integral</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+<body>
+    <div class="container">
+        <img src="titulo.png"> 
+        <input type="text" id="integralInput" placeholder="Ingresa la integral aquí, por ejemplo, x^2*sin(3x)">
+        <button onclick="resolverIntegral()">Resolver</button>
+        <div id="resultado" class="resultado"></div>
+        <div id="tabla" class="tabla"></div>
+        <button class="back-button" onclick="irAtras()">Atrás</button>
+    </div>
+
+    <script>
+        function resolverIntegral() {
+            const integral = document.getElementById('integralInput').value;
+            const resultadoDiv = document.getElementById('resultado');
+            const tablaDiv = document.getElementById('tabla');
+            let resultado = '';
+            let tabla = '';
+
+            const regexSin = /^x\^(\d+)\*sin\((\d+)x\)$/;
+            const regexCos = /^x\^(\d+)\*cos\((\d+)x\)$/;
+            const regexExp = /^x\^(\d+)\*e\^(\d+)x$/;
+
+            if (regexSin.test(integral)) {
+                const match = integral.match(regexSin);
+                const n = match[1];
+                const a = match[2];
+
+                resultado = `La integral de ${integral} es: -x^${n} cos(${a}x) / ${a} + ... (más pasos aquí)`;
+                tabla = `
+                    <h3>Construcción de la Tabla:</h3>
+                    <table>
+                        <tr>
+                            <th>u</th>
+                            <th>dv</th>
+                            <th>du</th>
+                            <th>v</th>
+                        </tr>
+                        <tr>
+                            <td>x^${n}</td>
+                            <td>sin(${a}x)dx</td>
+                            <td>${n} x^(${n}-1)dx</td>
+                            <td>-1/${a} cos(${a}x)</td>
+                        </tr>
+                        <tr>
+                            <td>${n} x^(${n}-1)</td>
+                            <td>cos(${a}x)dx</td>
+                            <td>${n}(${n}-1)x^(${n}-2)dx</td>
+                            <td>1/${a} sin(${a}x)</td>
+                        </tr>
+                        <tr>
+                            <td>${n}(${n}-1)x^(${n}-2)</td>
+                            <td>sin(${a}x)dx</td>
+                            <td>${n}(${n}-1)(${n}-2)x^(${n}-3)dx</td>
+                            <td>-1/${a} cos(${a}x)</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </table>
+                `;
+            } else if (regexCos.test(integral)) {
+                const match = integral.match(regexCos);
+                const n = match[1];
+                const a = match[2];
+
+                resultado = `La integral de ${integral} es: x^${n} sin(${a}x) / ${a} + ... (más pasos aquí)`;
+                tabla = `
+                    <h3>Construcción de la Tabla:</h3>
+                    <table>
+                        <tr>
+                            <th>u</th>
+                            <th>dv</th>
+                            <th>du</th>
+                            <th>v</th>
+                        </tr>
+                        <tr>
+                            <td>x^${n}</td>
+                            <td>cos(${a}x)dx</td>
+                            <td>${n} x^(${n}-1)dx</td>
+                            <td>1/${a} sin(${a}x)</td>
+                        </tr>
+                        <tr>
+                            <td>${n} x^(${n}-1)</td>
+                            <td>-sin(${a}x)dx</td>
+                            <td>${n}(${n}-1)x^(${n}-2)dx</td>
+                            <td>-1/${a} cos(${a}x)</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </table>
+                `;
+            } else if (regexExp.test(integral)) {
+                const match = integral.match(regexExp);
+                const n = match[1];
+                const a = match[2];
+
+                resultado = `La integral de ${integral} es: x^${n} e^(${a}x) / ${a} + ... (más pasos aquí)`;
+                tabla = `
+                    <h3>Construcción de la Tabla:</h3>
+                    <table>
+                        <tr>
+                            <th>u</th>
+                            <th>dv</th>
+                            <th>du</th>
+                            <th>v</th>
+                        </tr>
+                        <tr>
+                            <td>x^${n}</td>
+                            <td>e^(${a}x)dx</td>
+                            <td>${n} x^(${n}-1)dx</td>
+                            <td>1/${a} e^(${a}x)</td>
+                        </tr>
+                        <tr>
+                            <td>${n} x^(${n}-1)</td>
+                            <td>e^(${a}x)dx</td>
+                            <td>${n}(${n}-1)x^(${n}-2)dx</td>
+                            <td>e^(${a}x)/${a}^2</td>
+                        </tr>
+                        <tr>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </table>
+                `;
+            } else {
+                resultado = 'Tipo de integral no soportado o formato incorrecto.';
+                tabla = '';
+            }
+
+            resultadoDiv.innerText = resultado;
+            tablaDiv.innerHTML = tabla;
+        }
+
+        function irAtras() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

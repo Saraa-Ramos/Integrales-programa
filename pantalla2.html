@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Caso</title>
+    <link rel="stylesheet" href="estilo.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="logointegrales.png" alt="Logo" class="logo">
+            <img src="integral.png" alt="titulo" class="logo">
+        </div>
+        <div class="cases">
+            <div class="case">
+                <h2>Caso 1</h2>
+                <p>Integrar de la forma:</p>
+                <ul>
+                    <li>x<sup>n</sup> sin(ax)</li>
+                    <li>x<sup>n</sup> cos(ax)</li>
+                    <li>x<sup>n</sup> A<sup>a</sup> * x</li>
+                </ul>
+                <button onclick="irAIntegrar('integrar.html')">Elegir Caso 1</button>
+            </div>
+            <div class="case">
+                <h2>Caso 2</h2>
+                <p>Integrar de la forma:</p>
+                <ul>
+                    <li>e<sup>ax</sup></li>
+                    <li>sin(ax) cos(bx)</li>
+                    <li>cos(ax) cos(bx)</li>
+                    <li>sin(ax) sin(bx)</li>
+                </ul>
+                <button onclick="irAIntegrar('caso2.html')">Elegir Caso 2</button>
+            </div>
+        </div>
+        <br> 
+        <button onclick="volverAIndex()">INICIO</button>
+    </div>
+
+    <script>
+        function irAIntegrar(url) {
+            window.location.href = url;
+        }
+        function volverAIndex() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
+

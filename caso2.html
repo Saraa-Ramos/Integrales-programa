@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolver Integral</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+<body>
+    <div class="container">
+        <img src="titulo.png"> 
+        <input type="text" id="integralInput" placeholder="Ingresa la integral aquí, por ejemplo, sin(ax)cos(bx)">
+        <button onclick="resolverIntegral()">Resolver</button>
+        <div id="resultado" class="resultado"></div>
+        <div id="tabla" class="tabla"></div>
+        <!-- Botón para ir atrás -->
+        <button class="back-button" onclick="irAtras()">Atrás</button>
+    </div>
+
+    <script>
+        function resolverIntegral() {
+            const integral = document.getElementById('integralInput').value;
+            const resultadoDiv = document.getElementById('resultado');
+            const tablaDiv = document.getElementById('tabla');
+            let resultado = '';
+            let tabla = '';
+
+            // Regex para detectar las integrales soportadas
+            const regexSinCos = /^sin\((\d+)x\)\s*\*\s*cos\((\d+)x\)$/;
+            const regexCosCos = /^cos\((\d+)x\)\s*\*\s*cos\((\d+)x\)$/;
+            const regexSinSin = /^sin\((\d+)x\)\s*\*\s*sin\((\d+)x\)$/;
+            const regexExp = /^e\^(\d+)x$/;
+
+            if (regexSinCos.test(integral)) {
+                const match = integral.match(regexSinCos);
+                const a = match[1];
+                const b = match[2];
+
+                resultado = `La integral de ${integral} es: (1/(${a+b})) sin(${a+b}x) + (1/(${a-b})) sin(${a-b}x) + C`;
+                tabla = generarTablaSinCos(a, b);
+            } else if (regexCosCos.test(integral)) {
+                const match = integral.match(regexCosCos);
+                const a = match[1];
+                const b = match[2];
+
+                resultado = `La integral de ${integral} es: (1/(${a+b})) sin(${a+b}x) + (1/(${a-b})) sin(${a-b}x) + C`;
+                tabla = generarTablaCosCos(a, b);
+            } else if (regexSinSin.test(integral)) {
+                const match = integral.match(regexSinSin);
+                const a = match[1];
+                const b = match[2];
+
+                resultado = `La integral de ${integral} es: -(1/(${a+b})) cos(${a+b}x) - (1/(${a-b})) cos(${a-b}x) + C`;
+                tabla = generarTablaSinSin(a, b);
+            } else if (regexExp.test(integral)) {
+                const match = integral.match(regexExp);
+                const a = match[1];
+
+                resultado = `La integral de ${integral} es: (1/${a})e^(${a}x) + C`;
+                tabla = generarTablaExp(a);
+            } else {
+                resultado = 'Tipo de integral no soportado o formato incorrecto.';
+            }
+
+            resultadoDiv.innerText = resultado;
+            tablaDiv.innerHTML = tabla;
+        }
+
+        function generarTablaSinCos(a, b) {
+            return `
+                <h3>Construcción de la Tabla:</h3>
+                <table>
+                    <tr>
+                        <th>u</th>
+                        <th>dv</th>
+                        <th>du</th>
+                        <th>v</th>
+                    </tr>
+                    <tr>
+                        <td>sin(${a}x)</td>
+                        <td>cos(${b}x)dx</td>
+                        <td>${a} cos(${a}x)dx</td>
+                        <td>1/${b} sin(${b}x)</td>
+                    </tr>
+                    <tr>
+                        <td>${a} cos(${a}x)</td>
+                        <td>sin(${b}x)dx</td>
+                        <td>-${a^2} sin(${a}x)dx</td>
+                        <td>-1/${b^2} cos(${b}x)</td>
+                    </tr>
+                </table>
+            `;
+        }
+
+        function generarTablaCosCos(a, b) {
+            return `
+                <h3>Construcción de la Tabla:</h3>
+                <table>
+                    <tr>
+                        <th>u</th>
+                        <th>dv</th>
+                        <th>du</th>
+                        <th>v</th>
+                    </tr>
+                    <tr>
+                        <td>cos(${a}x)</td>
+                        <td>cos(${b}x)dx</td>
+                        <td>-${a} sin(${a}x)dx</td>
+                        <td>1/${b} sin(${b}x)</td>
+                    </tr>
+                    <tr>
+                        <td>-${a} sin(${a}x)</td>
+                        <td>sin(${b}x)dx</td>
+                        <td>-(${a}^2) cos(${a}x)dx</td>
+                        <td>-1/${b^2} cos(${b}x)</td>
+                    </tr>
+                </table>
+            `;
+        }
+
+        function generarTablaSinSin(a, b) {
+            return `
+                <h3>Construcción de la Tabla:</h3>
+                <table>
+                    <tr>
+                        <th>u</th>
+                        <th>dv</th>
+                        <th>du</th>
+                        <th>v</th>
+                    </tr>
+                    <tr>
+                        <td>sin(${a}x)</td>
+                        <td>sin(${b}x)dx</td>
+                        <td>${a} cos(${a}x)dx</td>
+                        <td>-1/${b} cos(${b}x)</td>
+                    </tr>
+                    <tr>
+                        <td>${a} cos(${a}x)</td>
+                        <td>cos(${b}x)dx</td>
+                        <td>-(${a}^2) sin(${a}x)dx</td>
+                        <td>-1/${b^2} sin(${b}x)</td>
+                    </tr>
+                </table>
+            `;
+        }
+
+        function generarTablaExp(a) {
+            return `
+                <h3>Construcción de la Tabla:</h3>
+                <table>
+                    <tr>
+                        <th>u</th>
+                        <th>dv</th>
+                        <th>du</th>
+                        <th>v</th>
+                    </tr>
+                    <tr>
+                        <td>e^(${a}x)</td>
+                        <td>dx</td>
+                        <td>${a} e^(${a}x)dx</td>
+                        <td>x</td>
+                    </tr>
+                </table>
+            `;
+        }
+
+        function irAtras() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
